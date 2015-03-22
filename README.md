@@ -16,3 +16,6 @@ The following skills are developed over the course:
   * Predicting the outcome of disputes or cases
   * Estimating the cost of a matter
   * Selecting optimal local counsel or jurisdiction.
+
+#### Legal_Analytics Repository
+This repository will be used for various assignments and projects for Legal Analytics. Most of the work is accomplished using [RStudio](http://www.rstudio.com/) and [Sublime Text 2](http://www.sublimetext.com/).
