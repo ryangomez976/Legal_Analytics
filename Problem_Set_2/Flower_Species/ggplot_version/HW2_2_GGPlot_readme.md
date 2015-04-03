@@ -1,0 +1,5 @@
+#### Using ggplot2
+
+Problem set 2, No. 2: This version was an attempt to use ggplot2 for each graph instead of the base Graphics package in R. Apparently using partition.tree in the "tree" package does not overlay the divisions even with add set to TRUE, which means that the divisions need to be manually addded through the use of geom_line.
+
+I also explored the use of additional fonts using the "extrafont" package. I used a proprietary font to label the graph, which ultimately became difficult to export to PDF. While I could view the plot on RStudio with the proprietary fonts, I had to screen shot the graph in order to view it outside of RStudio. Again, this was ultimately not worth the effort, as simply getting extra fonts into R is a major hassle, even using the "extrafont" package. Although, I believe that using ubiquitous and system fonts would ultimately be easier. 
