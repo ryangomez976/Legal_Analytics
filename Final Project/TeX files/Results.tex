@@ -1,0 +1,130 @@
+\section{Results \& Methods}
+\subsection{Side Letter Agreements}
+Side letter agreements are clauses that are not part of the primary CBA, but are nonetheless important to the parties. For example, Evergreen Elementary School District in San Jose, CA includes a side letter agreement concerning participative decision-making. The presence or absence of a side letter agreement can reflect difficulty in the bargaining process, or may reflect policies that are important to the parties, but are not traditionally within the scope of a CBA. Side letters  likely reflect pain points within a district, and might suggest areas that either side may press to gain a strategic advantage during the negotiation process. 
+
+In order to detect side letter agreements, I first tokenized\footnote{\hspace{2ex}For more information on tokenization, \texit{see} \url{http://en.wikipedia.org/wiki/Tokenization_(lexical_analysis)}.} the text corpus and removed 99\% of the sparse terms. Since decision trees are a supervised learning method,\footnote{\hspace{2ex}For information concerning supervised learning methods in machine learning, \textit{see} \url{http://en.wikipedia.org/wiki/Supervised_learning}.} I then identified, via keyword search for “sideletter” and “side letter,” CBAs that contained a side letter agreement. The CBAs that contained a side letter clause were put into a vector named \texttt{sideletter} in order to label data that contained the clause I was looking for. The vector was then added to the data frame containing the tokenized corpus as \texttt{sideletterpresence}. The data frame was then split into training (70\% of the documents) and test sets (30\% of the documents).
+
+A recursive partitioning function,\footnote{\hspace{2ex}For information on recursive partitioning, \textit{see} \url{http://en.wikipedia.org/wiki/Recursive_partitioning}.} \texttt{rpart}, was then used to predict the dependent variable, \texttt{sideletterpresence}, while using the remaining non-sparse terms as independent variables. My initial results used 10 documents to train the classifier and were output to a confusion matrix; the model has an accuracy rate of 93.8\%:
+
+\begin{center}
+\begin{tikzpicture}[
+box/.style={draw,rectangle,minimum size=2cm,text width=1.5cm,align=left}]
+\matrix (conmat) [row sep=.1cm,column sep=.1cm] {
+\node (tpos) [box,
+    label=left:\( \mathbf{p'} \),
+    label=above:\( \mathbf{p} \),
+    ] {\hspace{5mm} \LARGE 5};
+&
+\node (fneg) [box,
+    label=above:\textbf{n},
+    label=right:\( \mathrm{} \)] {\hspace{5mm} \LARGE 0};
+\\
+\node (fpos) [box,
+    label=left:\( \mathbf{n'} \),
+    label=below:] {\hspace{5mm} \LARGE 1};
+&
+\node (tneg) [box,
+    label=right:\( \mathrm{} \),
+    label=below:] {\hspace{4mm} \LARGE 75};
+\\
+};
+\node [rotate=90,left=.05cm of conmat,anchor=center,text width=2.5cm,align=center] {\textbf{Actual Value}};
+\node [above=.05cm of conmat] {\textbf{Predicted Outcome}};
+\end{tikzpicture}
+\end{center}
+The results suggest that the model is over-fitting, as I know there are more documents that contain side letter agreements. I ran the model a second time using 60 documents to train the classifier; the model has 100\% accuracy:\footnote{\hspace{2ex}Appendix 2.}
+\begin{center}
+\begin{tikzpicture}[
+box/.style={draw,rectangle,minimum size=2cm,text width=1.5cm,align=left}]
+\matrix (conmat) [row sep=.1cm,column sep=.1cm] {
+\node (tpos) [box,
+    label=left:\( \mathbf{p'} \),
+    label=above:\( \mathbf{p} \),
+    ] {\hspace{4mm} \LARGE 15};
+&
+\node (fneg) [box,
+    label=above:\textbf{n},
+    label=right:\( \mathrm{} \)] {\hspace{5mm} \LARGE 0};
+\\
+\node (fpos) [box,
+    label=left:\( \mathbf{n'} \),
+    label=below:] {\hspace{5mm} \LARGE 0};
+&
+\node (tneg) [box,
+    label=right:\( \mathrm{} \),
+    label=below:] {\hspace{4mm} \LARGE 66};
+\\
+};
+\node [rotate=90,left=.05cm of conmat,anchor=center,text width=2.5cm,align=center] {\textbf{Actual Value}};
+\node [above=.05cm of conmat] {\textbf{Predicted Outcome}};
+\end{tikzpicture}
+\end{center}
+
+Contrary to what 100\% accuracy suggests, the model is not performing as intended; it is likely over-fitting to random noise in the documents. I decided to try clauses pertaining to professional workdays or defined workdays. Since every CBA contains either a defined or professional workday, my thinking is that the model will have an easier time classifying the documents. 
+
+\subsection{Professional Workday versus Defined Workday}
+
+A professional workday is contrasted with a defined workday, and a CBA will dictate what sort of workday a district has. A professional workday gives teachers flexibility in when they report to and leave work, while a defined workday mandates the hours a teacher will work each day.  For example, one CBA mandates that the workday is “7:45 a.m. – 2:35 p.m.” The presence of a professional workday tends to reflect a district’s recognition of a teacher as a professional, and likely corresponds with greater teacher autonomy overall, while a defined workday likely reflects less teacher autonomy.
+
+Since districts have either a professional workday or defined workday, I ran the classifier twice after tokenizing the corpus and removing 99\% of the sparse terms. The first run was aimed at identifying a professional workday as \texttt{1} and a defined workday as \texttt{0}, and the second run was aimed at identifying a defined workday as \texttt{1} and a professional workday as \texttt{0}.
+
+In order to train the \texttt{rpart} classifier, I randomly selected individual CBAs and labeled the document according to the type of workday that was present. For professional workdays, I placed 14 CBAs into a vector called \texttt{profworkday}, and for defined workdays, I placed 16 CBA into a vector called \texttt{defworkday}. The vectors were then added to the data frame as \texttt{profworkdayclass} and \texttt{defworkdayclass}, and the classifiers were run separately. 
+
+\pagebreak For \texttt{profworkdayclass}, the model was 100\% accurate:
+
+\begin{center}
+\begin{tikzpicture}[
+box/.style={draw,rectangle,minimum size=2cm,text width=1.5cm,align=left}]
+\matrix (conmat) [row sep=.1cm,column sep=.1cm] {
+\node (tpos) [box,
+    label=left:\( \mathbf{p'} \),
+    label=above:\( \mathbf{p} \),
+    ] {\hspace{5mm} \LARGE 5};
+&
+\node (fneg) [box,
+    label=above:\textbf{n},
+    label=right:\( \mathrm{} \)] {\hspace{5mm} \LARGE 0};
+\\
+\node (fpos) [box,
+    label=left:\( \mathbf{n'} \),
+    label=below:] {\hspace{5mm} \LARGE 0};
+&
+\node (tneg) [box,
+    label=right:\( \mathrm{} \),
+    label=below:] {\hspace{4mm} \LARGE 76};
+\\
+};
+\node [rotate=90,left=.05cm of conmat,anchor=center,text width=2.5cm,align=center] {\textbf{Actual Value}};
+\node [above=.05cm of conmat] {\textbf{Predicted Outcome}};
+\end{tikzpicture}
+\end{center}
+
+For the \texttt{defworkdayclass}, the model was also 100\% accurate:
+
+\begin{center}
+\begin{tikzpicture}[
+box/.style={draw,rectangle,minimum size=2cm,text width=1.5cm,align=left}]
+\matrix (conmat) [row sep=.1cm,column sep=.1cm] {
+\node (tpos) [box,
+    label=left:\( \mathbf{p'} \),
+    label=above:\( \mathbf{p} \),
+    ] {\hspace{5mm} \LARGE 4};
+&
+\node (fneg) [box,
+    label=above:\textbf{n},
+    label=right:\( \mathrm{} \)] {\hspace{5mm} \LARGE 0};
+\\
+\node (fpos) [box,
+    label=left:\( \mathbf{n'} \),
+    label=below:] {\hspace{5mm} \LARGE 0};
+&
+\node (tneg) [box,
+    label=right:\( \mathrm{} \),
+    label=below:] {\hspace{4mm} \LARGE 77};
+\\
+};
+\node [rotate=90,left=.05cm of conmat,anchor=center,text width=2.5cm,align=center] {\textbf{Actual Value}};
+\node [above=.05cm of conmat] {\textbf{Predicted Outcome}};
+\end{tikzpicture}
+\end{center}
+Again, the model appears to be over-fitting to random noise. Contrary to my thinking that because each CBA has either a professional workday or defined workday the classifier will not pick up on as much noise,\footnote{\hspace{2ex}I ran the classifier a second time using more documents for \texttt{profworkday}, but ultimately saw no improvement. \textit{See}, Appendix 3.} it appears that I am still running into the same problems as with side letters. 

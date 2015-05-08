@@ -1,0 +1,18 @@
+\begin{center}
+Appendix 1
+\end{center}
+
+\begin{lstlisting}
+
+library(dplyr)
+# http://www.cde.ca.gov/ds/si/ds/pubschls.asp
+ca_schools <- read.csv("Desktop/pubschls.csv")
+ca_select <- select(ca_schools, StatusType, County, District, City, Phone, Website, AdmFName1, AdmLName1, AdmEmail1)
+ca_unique_dist <- distinct(ca_select, District)
+ca_subset <- filter(ca_unique_dist, StatusType == "Active")
+ca_unique_dist <- ca_subset
+ca_subset <- filter(ca_unique_dist, Website != "")
+ca_unique_dist <- ca_subset
+ca_adm_email <- filter(ca_subset, AdmEmail1 != "")
+
+\end{lstlisting}
